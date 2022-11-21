@@ -19,3 +19,8 @@ exports.get = async(req,res) =>{
     const client = await User.SelectClient();
     res.status(200).json(client);
 }
+
+exports.getfunc = async(req,res) =>{
+    const client = await User.SelectFunc();
+    res.status(200).json(client);
+}
