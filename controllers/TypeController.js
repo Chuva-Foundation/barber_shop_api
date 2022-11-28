@@ -7,6 +7,7 @@ exports.create = async (req, res) => {
  
     res.status(201).send();
 }
+
 exports.select = async (req,res)=>{
     
     const type = await User.Selectall();
