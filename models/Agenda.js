@@ -13,7 +13,7 @@ class Agenda {
 
     static async GetAgenda(){
         try {
-            const hours = await db.query("SELECT * FROM scheduling");
+            const hours = await db.query("SELECT users.name,services.service,hour,services.duration FROM scheduling JOIN users ON scheduling.user_id = users.id JOIN services ON scheduling.service_id = services.id WHERE scheduling.user_id IS NOT NULL");  
             return hours.rows;
         } catch (error) {
             console.error(error.message);
@@ -22,8 +22,8 @@ class Agenda {
 
     static async GetAgenFree(){
         try {
-            const free = await db.query("SELECT * FROM scheduling");
-            return hours.rows;
+            const free = await db.query("SELECT users.name,services.service,hour,services.duration FROM scheduling JOIN users ON scheduling.user_id = users.id JOIN services ON scheduling.service_id = services.id WHERE scheduling.user_id IS NOT NULL");
+            return free.rows;
         } catch (error) {
             
         }

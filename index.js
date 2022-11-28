@@ -49,7 +49,8 @@ app.post('/hour',HourController.create);
 app.get('/hour',HourController.get);
 
 /*---------------------------------scheduling-----------------------------*/
-app.post('/scheduling',AgendController.agendar);
+app.post('/employee/scheduling',EmployeeMiddlewares.has_employee_access,AgendController.agendar);
 app.get('/scheduling',AgendController.getAgend);
+app.get('/scheduling/free',AgendController.get_Frees_sched);
 
 app.listen(PORT,()=> console.log(`Servidor rodando na url:http://localhost:${PORT}`));
