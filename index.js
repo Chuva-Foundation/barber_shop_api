@@ -2,55 +2,27 @@ const express=require('express');
 const app = express();
 const jwt =require('jsonwebtoken')
 require('dotenv').config();
+/*----------------------------controllers----------------------------------*/ 
+const UserC =  require('./controllers/UserC');
+const Session = require('./controllers/SessionC');
+const ServicesC = require('./controllers/ServicesC');
+/*----------------------------Middlewares-----------------------------------*/
+const EmailExist = require('./middlewares/CheckEmailMiddleware');
+const AuthMiddleware = require('./middlewares/AuthMiddleware');
+const CheckEmployeeMiddleware = require('./middlewares/CheckEmployeeMiddleware');
+/*--------------------------------------------------------------------------*/
 
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 
-const auth = require("./middlewares/auth");
-/*-------------------------Controllers-------------------------*/
-const TypeController = require('./controllers/TypeController');
-const UserController = require('./controllers/UserController');
-const ClientController = require('./controllers/ClientController');
-const EmployeeController = require('./controllers/EmployeeController'); 
-const ServController = require('./controllers/ServController');
-const SessionController = require('./controllers/SessionController');
-const HourController = require('./controllers/HourController');
-const EmployeeMiddlewares = require('./middlewares/EmployeeMiddlewares');
-const AgendController  = require('./controllers/AgendController');
+app.post('/user/regist',EmailExist.email_exist,UserC.regist);
+app.post('/user/login',Session.login);
 
+app.get('/user',AuthMiddleware,UserC.getusers);
+app.get('/user/email',UserC.getemail);
 
-/*--------------------------User_routes-------------------------------*/
-app.post('/login',SessionController.login);
-app.get('/logout',SessionController.logout);
-
-//app.use(auth.authorization);
-
-app.post('/user',UserController.create);
-app.get('/user/client',ClientController.get);
-app.get('/user/employee',EmployeeController.getfunc);
-
-/*-------------------------Type_routes---------------------------------*/
-
-app.post('/type',TypeController.create);
-app.get('/type',TypeController.select);
-
-/*---------------------------Services_routes----------------------------*/
-
-app.post('/service', EmployeeMiddlewares.has_employee_access, ServController.create);
-app.get('/service',ServController.get);
-app.get('/service/:id',ServController.selectById);
-app.put('/service/:id',ServController.update);
-app.delete('/service/:id',ServController.delete); 
-
-/*------------------------------Hour_routes------------------------------*/
-
-app.post('/hour',HourController.create);
-app.get('/hour',HourController.get);
-
-/*---------------------------------scheduling-----------------------------*/
-app.post('/employee/scheduling',EmployeeMiddlewares.has_employee_access,AgendController.agendar);
-app.get('/scheduling',AgendController.getAgend);
-app.get('/scheduling/free',AgendController.get_Frees_sched);
+app.get('/services',AuthMiddleware,CheckEmployeeMiddleware.has_employee_access,ServicesC.getallservices);
+app.post('/create/services',AuthMiddleware,CheckEmployeeMiddleware.has_employee_access,ServicesC.createservices);
 
 app.listen(PORT,()=> console.log(`Servidor rodando na url:http://localhost:${PORT}`));
